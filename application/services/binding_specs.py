@@ -1,10 +1,14 @@
-import domain.services as domain_services
+import infrastructure.repositories as infra_repositories
 import pinject
 
 
 class AppServiceBindingSpec(pinject.BindingSpec):
     def configure(self, bind):
-        pass
+        bind(
+            'user_repo',
+            to_class=infra_repositories.UserRepository,
+            in_scope=pinject.SINGLETON,
+        )
 
     def dependencies(self):
-        return [domain_services.DomainServiceBindingSpec()]
+        return [infra_repositories.InfraRepositoryBindingSpec()]

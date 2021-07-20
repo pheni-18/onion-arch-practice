@@ -24,6 +24,6 @@ class UserController:
 
     @router.get(_prefix + '/')
     async def get_users(self):
-        users = self._app_user_service.get_all_users()
+        users = self._app_user_service.get_all()
 
         return {'result': users}

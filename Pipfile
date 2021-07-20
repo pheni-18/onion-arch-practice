@@ -8,6 +8,7 @@ fastapi = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 fastapi-utils = "*"
 pinject = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 
