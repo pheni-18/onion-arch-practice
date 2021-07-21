@@ -14,3 +14,6 @@ class AppUserService:
 
     def get_all(self) -> List[domain_models.User]:
         return self._user_repo.get_all()
+
+    def register(self, user: domain_models.User):
+        return self._user_repo.create(user)

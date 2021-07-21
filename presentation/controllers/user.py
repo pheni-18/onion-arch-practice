@@ -1,4 +1,5 @@
 from ..converters import UserConverter
+from ..schemas import UserCreate
 from depends_provider import DependsProvider
 from fastapi import APIRouter, Depends
 from fastapi_utils.cbv import cbv
@@ -32,3 +33,9 @@ class UserController:
     async def get_users(self):
         users = self._app_user_service.get_all()
         return [self._user_converter.to_schema(user) for user in users]
+
+    @router.post(_prefix + '/')
+    async def create_user(self, user: UserCreate):
+        created_user = self._user_converter.create_domain(user)
+        self._app_user_service.register(created_user)
+        return self._user_converter.to_schema(created_user)

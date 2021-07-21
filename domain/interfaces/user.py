@@ -8,3 +8,7 @@ class IUserRepository(metaclass=ABCMeta):
     @abstractmethod
     def get_all(self) -> List[domain_models.User]:
         pass
+
+    @abstractmethod
+    def create(self, user: domain_models.User):
+        pass
