@@ -31,5 +31,4 @@ class UserController:
     @router.get(_prefix + '/')
     async def get_users(self):
         users = self._app_user_service.get_all()
-        result = [self._user_converter.to_schema(user) for user in users]
-        return {'result': result}
+        return [self._user_converter.to_schema(user) for user in users]
