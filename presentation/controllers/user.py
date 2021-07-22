@@ -45,3 +45,8 @@ class UserController:
         user_update_dto = self._user_converter.to_update_dto(id, user_update)
         user_dto = self._app_user_service.update(user_update_dto)
         return self._user_converter.to_schema(user_dto)
+
+    @router.delete(_prefix + '/{id}')
+    async def delete_user(self, id: str):
+        self._app_user_service.delete(id)
+        return

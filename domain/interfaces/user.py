@@ -20,3 +20,7 @@ class IUserRepository(metaclass=ABCMeta):
     @abstractmethod
     def update(self, user: domain_models.User):
         pass
+
+    @abstractmethod
+    def delete(self, id: domain_models.UserID):
+        pass

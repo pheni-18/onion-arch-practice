@@ -40,3 +40,7 @@ class AppUserService:
 
         self._user_repo.update(user)
         return UserDTO.from_domain(user)
+
+    def delete(self, id: str):
+        id_ = domain_models.UserID(value=id)
+        self._user_repo.delete(id_)

@@ -55,3 +55,9 @@ class UserRepository(domain_interfaces.IUserRepository):
             db_user.last_name = user.last_name
             db_user.age = user.age
             session.commit()
+
+    def delete(self, id: domain_models.UserID):
+        with self._session_generator.generate() as session:
+            db_user = session.query(User).filter(User.id == id.value)
+            db_user.delete()
+            session.commit()
