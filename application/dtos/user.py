@@ -29,9 +29,7 @@ class UserDTO(UserBaseDTO):
 class UserCreateDTO(UserBaseDTO):
     pass
 
-    def create_domain(self) -> domain_models.User:
-        return domain_models.User(
-            first_name=self.first_name,
-            last_name=self.last_name,
-            age=self.age,
-        )
+
+@dataclass
+class UserUpdateDTO(UserBaseDTO):
+    id: str

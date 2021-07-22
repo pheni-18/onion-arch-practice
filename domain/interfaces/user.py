@@ -10,5 +10,13 @@ class IUserRepository(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def get(self, id: domain_models.UserID) -> domain_models.User:
+        pass
+
+    @abstractmethod
     def create(self, user: domain_models.User):
+        pass
+
+    @abstractmethod
+    def update(self, user: domain_models.User):
         pass

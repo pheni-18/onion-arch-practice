@@ -16,16 +16,26 @@ class UserRepository(domain_interfaces.IUserRepository):
 
     def get_all(self) -> List[domain_models.User]:
         with self._session_generator.generate() as session:
-            users = session.query(User).all()
+            db_users = session.query(User).all()
             return [
                 domain_models.User(
-                    id=domain_models.UserID(value=user.id),
-                    first_name=user.first_name,
-                    last_name=user.last_name,
-                    age=user.age,
+                    id=domain_models.UserID(value=db_user.id),
+                    first_name=db_user.first_name,
+                    last_name=db_user.last_name,
+                    age=db_user.age,
                 )
-                for user in users
+                for db_user in db_users
             ]
+
+    def get(self, id: domain_models.UserID) -> domain_models.User:
+        with self._session_generator.generate() as session:
+            db_user = session.query(User).filter(User.id == id.value).first()
+            return domain_models.User(
+                id=domain_models.UserID(value=db_user.id),
+                first_name=db_user.first_name,
+                last_name=db_user.last_name,
+                age=db_user.age,
+            )
 
     def create(self, user: domain_models.User):
         with self._session_generator.generate() as session:
@@ -36,4 +46,12 @@ class UserRepository(domain_interfaces.IUserRepository):
                 age=user.age,
             )
             session.add(db_user)
+            session.commit()
+
+    def update(self, user: domain_models.User):
+        with self._session_generator.generate() as session:
+            db_user = session.query(User).filter(User.id == user.id.value).first()
+            db_user.first_name = user.first_name
+            db_user.last_name = user.last_name
+            db_user.age = user.age
             session.commit()

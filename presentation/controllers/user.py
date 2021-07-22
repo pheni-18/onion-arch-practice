@@ -1,5 +1,5 @@
 from ..converters import UserConverter
-from ..schemas import UserCreate
+from ..schemas import UserCreate, UserUpdate
 from depends_provider import DependsProvider
 from fastapi import APIRouter, Depends
 from fastapi_utils.cbv import cbv
@@ -38,4 +38,10 @@ class UserController:
     async def create_user(self, user_create: UserCreate):
         user_create_dto = self._user_converter.to_create_dto(user_create)
         user_dto = self._app_user_service.register(user_create_dto)
+        return self._user_converter.to_schema(user_dto)
+
+    @router.patch(_prefix + '/{id}')
+    async def update_user(self, id: str, user_update: UserUpdate):
+        user_update_dto = self._user_converter.to_update_dto(id, user_update)
+        user_dto = self._app_user_service.update(user_update_dto)
         return self._user_converter.to_schema(user_dto)
