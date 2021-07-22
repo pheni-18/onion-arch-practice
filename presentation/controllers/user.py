@@ -34,6 +34,11 @@ class UserController:
         user_dtos = self._app_user_service.get_all()
         return [self._user_converter.to_schema(user_dto) for user_dto in user_dtos]
 
+    @router.get(_prefix + '/{id}')
+    async def get_user(self, id: str):
+        user_dto = self._app_user_service.get(id)
+        return self._user_converter.to_schema(user_dto)
+
     @router.post(_prefix + '/')
     async def create_user(self, user_create: UserCreate):
         user_create_dto = self._user_converter.to_create_dto(user_create)

@@ -17,6 +17,11 @@ class AppUserService:
         users = self._user_repo.get_all()
         return [UserDTO.from_domain(user) for user in users]
 
+    def get(self, id: str) -> UserDTO:
+        id_ = domain_models.UserID(value=id)
+        user = self._user_repo.get(id_)
+        return UserDTO.from_domain(user)
+
     def register(self, user_create_dto: UserCreateDTO) -> UserDTO:
         user = domain_models.User(
             first_name=user_create_dto.first_name,
