@@ -1,21 +1,21 @@
 from ..schemas import User, UserCreate
 
-import domain.models as domain_models
+import application.dtos as app_dtos
 
 
 class UserConverter:
     @staticmethod
-    def to_schema(user: domain_models.User) -> User:
+    def to_schema(user: app_dtos.UserDTO) -> User:
         return User(
-            id=str(user.id.value),
+            id=user.id,
             firstName=user.first_name,
             lastName=user.last_name,
             age=user.age,
         )
 
     @staticmethod
-    def create_domain(user: UserCreate) -> domain_models.User:
-        return domain_models.User(
+    def to_create_dto(user: UserCreate) -> app_dtos.UserCreateDTO:
+        return app_dtos.UserCreateDTO(
             first_name=user.firstName,
             last_name=user.lastName,
             age=user.age,

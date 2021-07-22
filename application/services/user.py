@@ -1,7 +1,7 @@
+from ..dtos.user import UserDTO, UserCreateDTO
 from typing import List
 
 import domain.interfaces as domain_interfaces
-import domain.models as domain_models
 import pinject
 
 
@@ -12,8 +12,11 @@ class AppUserService:
     def __init__(self, user_repo: domain_interfaces.IUserRepository):
         self._user_repo = user_repo
 
-    def get_all(self) -> List[domain_models.User]:
-        return self._user_repo.get_all()
+    def get_all(self) -> List[UserDTO]:
+        users = self._user_repo.get_all()
+        return [UserDTO.from_domain(user) for user in users]
 
-    def register(self, user: domain_models.User):
-        return self._user_repo.create(user)
+    def register(self, user_create_dto: UserCreateDTO) -> UserDTO:
+        user = user_create_dto.create_domain()
+        self._user_repo.create(user)
+        return UserDTO.from_domain(user)

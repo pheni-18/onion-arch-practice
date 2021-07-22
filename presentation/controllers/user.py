@@ -31,11 +31,11 @@ class UserController:
 
     @router.get(_prefix + '/')
     async def get_users(self):
-        users = self._app_user_service.get_all()
-        return [self._user_converter.to_schema(user) for user in users]
+        user_dtos = self._app_user_service.get_all()
+        return [self._user_converter.to_schema(user_dto) for user_dto in user_dtos]
 
     @router.post(_prefix + '/')
-    async def create_user(self, user: UserCreate):
-        created_user = self._user_converter.create_domain(user)
-        self._app_user_service.register(created_user)
-        return self._user_converter.to_schema(created_user)
+    async def create_user(self, user_create: UserCreate):
+        user_create_dto = self._user_converter.to_create_dto(user_create)
+        user_dto = self._app_user_service.register(user_create_dto)
+        return self._user_converter.to_schema(user_dto)
