@@ -2,6 +2,7 @@ from ..db_session import SessionGenerator
 from ..models import User
 from typing import List
 
+import application.exceptions as app_exceptions
 import domain.interfaces as domain_interfaces
 import domain.models as domain_models
 import pinject
@@ -30,6 +31,9 @@ class UserRepository(domain_interfaces.IUserRepository):
     def get(self, id: domain_models.UserID) -> domain_models.User:
         with self._session_generator.generate() as session:
             db_user = session.query(User).filter(User.id == id.value).first()
+            if db_user is None:
+                raise app_exceptions.UserNotFoundException()
+
             return domain_models.User(
                 id=domain_models.UserID(value=db_user.id),
                 first_name=db_user.first_name,
@@ -51,6 +55,8 @@ class UserRepository(domain_interfaces.IUserRepository):
     def update(self, user: domain_models.User):
         with self._session_generator.generate() as session:
             db_user = session.query(User).filter(User.id == user.id.value).first()
+            if db_user is None:
+                raise app_exceptions.UserNotFoundException()
             db_user.first_name = user.first_name
             db_user.last_name = user.last_name
             db_user.age = user.age

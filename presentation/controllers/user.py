@@ -1,11 +1,11 @@
 from ..converters import UserConverter
-from ..schemas import UserCreate, UserUpdate, User
+from ..schemas import UserCreate, UserUpdate, User, UserNotFound
 from depends_provider import DependsProvider
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_utils.cbv import cbv
-from typing import ClassVar
-from typing import List
+from typing import ClassVar, List
 
+import application.exceptions as app_exceptions
 import application.services as app_services
 
 
@@ -42,16 +42,20 @@ class UserController:
         _prefix + '/{id}',
         response_model=User,
         responses={
-            404: {"model": User, "description": "The item was not found"},
+            status.HTTP_404_NOT_FOUND: {'model': UserNotFound, 'description': 'The user was not found'},
         },
     )
     async def get_user(self, id: str):
-        user_dto = self._app_user_service.get(id)
+        try:
+            user_dto = self._app_user_service.get(id)
+        except app_exceptions.UserNotFoundException as e:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+
         return self._user_converter.to_schema(user_dto)
 
     @router.post(
         _prefix + '/',
-        status_code=201,
+        status_code=status.HTTP_201_CREATED,
         response_model=User,
     )
     async def create_user(self, user_create: UserCreate):
@@ -63,20 +67,21 @@ class UserController:
         _prefix + '/{id}',
         response_model=User,
         responses={
-            404: {"model": User, "description": "The item was not found"},
+            status.HTTP_404_NOT_FOUND: {'model': UserNotFound, 'description': 'The user was not found'},
         },
     )
     async def update_user(self, id: str, user_update: UserUpdate):
         user_update_dto = self._user_converter.to_update_dto(id, user_update)
-        user_dto = self._app_user_service.update(user_update_dto)
+        try:
+            user_dto = self._app_user_service.update(user_update_dto)
+        except app_exceptions.UserNotFoundException as e:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+
         return self._user_converter.to_schema(user_dto)
 
     @router.delete(
         _prefix + '/{id}',
-        status_code=204,
-        responses={
-            404: {"model": User, "description": "The item was not found"},
-        },
+        status_code=status.HTTP_204_NO_CONTENT,
     )
     async def delete_user(self, id: str):
         self._app_user_service.delete(id)
